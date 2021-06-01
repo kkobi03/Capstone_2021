@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
     private void read_cascade_file(){
         copyFile("haarcascade_frontalface_alt.xml");
-        copyFile("haarcascade_eye_tree_eyeglasses.xml");
+       // copyFile("haarcascade_eye_tree_eyeglasses.xml");
 
         Log.d(TAG, "read_cascade_file:");
 
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity
             if (checkSelfPermission(CAMERA) != PackageManager.PERMISSION_GRANTED
                     || checkSelfPermission(ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    | checkSelfPermission(SEND_SMS) != PackageManager.PERMISSION_GRANTED
+                    || checkSelfPermission(SEND_SMS) != PackageManager.PERMISSION_GRANTED
                     || checkSelfPermission(WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{CAMERA, WRITE_EXTERNAL_STORAGE, ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, SEND_SMS }, CAMERA_PERMISSION_REQUEST_CODE);
                 havePermission = false;

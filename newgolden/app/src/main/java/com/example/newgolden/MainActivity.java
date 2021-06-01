@@ -51,9 +51,11 @@ public class MainActivity extends AppCompatActivity
     //   public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
     public native long loadCascade(String cascadeFileName );
     public native int detect(long cascadeClassifier_face,
-
-                             /* long cascadeClassifier_eye,*/ long matAddrInput, long matAddrResult);
+                             //아이 추가
+                             long cascadeClassifier_eye, long matAddrInput, long matAddrResult);
     public long cascadeClassifier_face = 0;
+    //여기 추가
+    public long cascadeClassifier_eye=0;
     public int human_cnt = 0;
 
     private final Semaphore writeLock = new Semaphore(1);
@@ -103,13 +105,16 @@ public class MainActivity extends AppCompatActivity
 
     private void read_cascade_file(){
         copyFile("haarcascade_frontalface_alt.xml");
-       // copyFile("haarcascade_eye_tree_eyeglasses.xml");
+        //추가
+        copyFile("haarcascade_eye_tree_eyeglasses.xml");
 
         Log.d(TAG, "read_cascade_file:");
 
         cascadeClassifier_face = loadCascade( "haarcascade_frontalface_alt.xml");
         Log.d(TAG, "read_cascade_file:");
 
+        //추가
+        cascadeClassifier_eye = loadCascade( "haarcascade_eye_tree_eyeglasses.xml");
     }
 
 
@@ -210,7 +215,8 @@ public class MainActivity extends AppCompatActivity
 
             Core.flip(matInput, matInput, 1);
 
-            int ret = detect(cascadeClassifier_face,/* cascadeClassifier_eye, */matInput.getNativeObjAddr(),
+                                                       //아이추가
+            int ret = detect(cascadeClassifier_face,cascadeClassifier_eye, matInput.getNativeObjAddr(),
                     matResult.getNativeObjAddr());
 
             if(ret == 0){

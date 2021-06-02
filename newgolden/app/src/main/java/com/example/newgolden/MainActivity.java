@@ -250,6 +250,9 @@ public class MainActivity extends AppCompatActivity
             if (human_cnt >= 100){
 
                 Intent intent = new Intent(MainActivity.this, BackActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 human_cnt = 0;
                // FragmentChange(0);
@@ -271,6 +274,9 @@ public class MainActivity extends AppCompatActivity
             if (eye_cnt >= 50){
 
                 Intent intent = new Intent(MainActivity.this, BackActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 eye_cnt = 0;
                 // FragmentChange(0);

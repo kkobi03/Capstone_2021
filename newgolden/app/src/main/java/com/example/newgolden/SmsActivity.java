@@ -65,7 +65,7 @@ public class SmsActivity extends AppCompatActivity {
 
         try {
 
-            String phoneNumber = "010--";//번호입력
+            String phoneNumber = "010-5127-7411";//번호입력
             String message = sadd;
             String dmessage = "(상세위치 : 위도 = "+ latitude + ", 경도 = "+ longitude + ")";
             SmsManager smsManager = SmsManager.getDefault();
@@ -89,11 +89,13 @@ public class SmsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SmsActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                finish();
+
             }
         });
-        finish();
     }
 
     @Override

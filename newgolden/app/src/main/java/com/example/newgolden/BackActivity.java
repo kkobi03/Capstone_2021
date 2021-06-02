@@ -45,6 +45,8 @@ public class BackActivity extends AppCompatActivity {
                 timertv.setText("Finished");//30초 타이머가 끝나면 자동으로 문자 전송되었습니다 페이지로 넘어가게
                 Intent intent = new Intent(BackActivity.this, SmsActivity.class);
                 startActivity(intent);
+                finish();
+
 
 
             }

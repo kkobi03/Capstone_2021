@@ -7,6 +7,9 @@ using namespace cv;
 using namespace std;
 
 
+
+
+
 float resize(Mat img_src, Mat &img_resize, int resize_width){
 
     float scale = resize_width / (float)img_src.cols ;
@@ -51,15 +54,17 @@ Java_com_example_newgolden_MainActivity_loadCascade(JNIEnv *env, jobject thiz,
 
 
 
+/*
 extern "C"
-JNIEXPORT void JNICALL
-Java_com_example_newgolden_MainActivity_detect(JNIEnv *env, jobject thiz,
-                                                                  jlong cascade_classifier_face,
-                                                                  jlong cascade_classifier_eye,
-                                                                  jlong mat_addr_input,
-                                                                  jlong mat_addr_result) {
+JNIEXPORT jint JNICALL
+Java_com_example_newgolden_MainActivity_detect_1face(JNIEnv *env, jobject thiz,
+                                                     jlong cascade_classifier_face,
+                                                     jlong mat_addr_input, jlong mat_addr_result) {
+
     Mat &img_input = *(Mat *) mat_addr_input;
     Mat &img_result = *(Mat *) mat_addr_result;
+
+    int ret = 0;
 
     img_result = img_input.clone();
 
@@ -73,57 +78,76 @@ Java_com_example_newgolden_MainActivity_detect(JNIEnv *env, jobject thiz,
     float resizeRatio = resize(img_gray, img_resize, 640);
 
     //-- Detect faces
+
     ((CascadeClassifier *) cascade_classifier_face)->detectMultiScale( img_resize, faces, 1.1, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
 
 
-    __android_log_print(ANDROID_LOG_DEBUG, (char *) "native-lib :: ",
-                        (char *) "face %d found ", faces.size());
+    ret = faces.size();
 
     for (int i = 0; i < faces.size(); i++) {
-        double real_facesize_x = faces[i].x / resizeRatio;
-        double real_facesize_y = faces[i].y / resizeRatio;
-        double real_facesize_width = faces[i].width / resizeRatio;
-        double real_facesize_height = faces[i].height / resizeRatio;
+        real_facesize_x = faces[i].x / resizeRatio;
+        real_facesize_y = faces[i].y / resizeRatio;
+        real_facesize_width = faces[i].width / resizeRatio;
+        real_facesize_height = faces[i].height / resizeRatio;
 
-        Point center( real_facesize_x + real_facesize_width / 2, real_facesize_y + real_facesize_height/2);
-        ellipse(img_result, center, Size( real_facesize_width / 2, real_facesize_height / 2), 0, 0, 360,
-                Scalar(255, 0, 255), 30, 8, 0);
-
+        Point lb(real_facesize_x+ real_facesize_width, real_facesize_y + real_facesize_height);
+        Point tr(real_facesize_x, real_facesize_y);
 
         Rect face_area(real_facesize_x, real_facesize_y, real_facesize_width,real_facesize_height);
+        rectangle(img_result,lb,tr,Scalar(0, 255, 0), 3, 4, 0);
         Mat faceROI = img_gray( face_area );
-        std::vector<Rect> eyes;
+        share=faceROI;
 
-        //-- In each face, detect eyes
-        ((CascadeClassifier *) cascade_classifier_eye)->detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CASCADE_SCALE_IMAGE, Size(30, 30) );
 
-        for ( size_t j = 0; j < eyes.size(); j++ )
-        {
-            Point eye_center( real_facesize_x + eyes[j].x + eyes[j].width/2, real_facesize_y + eyes[j].y + eyes[j].height/2 );
-            int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
-            circle( img_result, eye_center, radius, Scalar( 255, 0, 0 ), 30, 8, 0 );
-        }
+    return ret;
+}
+
+}extern "C"
+JNIEXPORT jint JNICALL
+Java_com_example_newgolden_MainActivity_detect_1eyes(JNIEnv *env, jobject thiz,
+                                                     jlong cascade_classifier_face,
+                                                     jlong cascade_classifier_eye,
+                                                     jlong mat_addr_input, jlong mat_addr_result) {
+    // TODO: implement detect_eyes()
+    Mat &img_input = *(Mat *) mat_addr_input;
+    Mat &img_result = *(Mat *) mat_addr_result;
+    img_result = img_input.clone();
+
+
+
+    int ret = 0;
+
+    std::vector<Rect> eyes;
+    Mat img_gray;
+
+    //-- In each face, detect eyes
+    ((CascadeClassifier *) cascade_classifier_eye)->detectMultiScale( share, eyes, 1.1, 2, 0 |CASCADE_SCALE_IMAGE, Size(30, 30) );
+
+    ret = eyes.size();
+
+    for ( size_t j = 0; j < eyes.size(); j++ )
+    {
+        Point eye_center( real_facesize_x + eyes[j].x + eyes[j].width/2, real_facesize_y + eyes[j].y + eyes[j].height/2 );
+        int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
+        circle( img_result, eye_center, radius, Scalar( 0, 255, 0 ), 3, 8, 0 );
     }
 
 
+    return ret;
 }
-
-
-
-
-
-/* 내가 작성한곳
-extern "C"
+*/extern "C"
 JNIEXPORT jint JNICALL
-Java_com_example_newgolden_MainActivity_detect(JNIEnv *env, jobject thiz,
-                                               jlong cascade_classifier_face,
-                                               jlong mat_addr_input,
-                                               jlong mat_addr_result) {
+Java_com_example_newgolden_MainActivity_detect_1face(JNIEnv *env, jobject thiz,
+                                                     jlong cascade_classifier_face,
+                                                     jlong cascade_classifier_eye,
+                                                     jlong mat_addr_input, jlong mat_addr_result) {
+    // TODO: implement detect_face()
 
     Mat &img_input = *(Mat *) mat_addr_input;
     Mat &img_result = *(Mat *) mat_addr_result;
 
-    int ret = 0;
+    short ret = 0;
+    short rete = 0;
 
     img_result = img_input.clone();
 
@@ -153,36 +177,43 @@ Java_com_example_newgolden_MainActivity_detect(JNIEnv *env, jobject thiz,
         double real_facesize_width = faces[i].width / resizeRatio;
         double real_facesize_height = faces[i].height / resizeRatio;
 
-       // Point center( real_facesize_x + real_facesize_width / 2, real_facesize_y + real_facesize_height/2);
+        // Point center( real_facesize_x + real_facesize_width / 2, real_facesize_y + real_facesize_height/2);
         Point lb(real_facesize_x+ real_facesize_width, real_facesize_y + real_facesize_height);
         Point tr(real_facesize_x, real_facesize_y);
         //ellipse(img_result, center, Size( real_facesize_width / 2, real_facesize_height / 2), 0, 0, 360,
-               // Scalar(255, 0, 255), 30, 8, 0);
+        // Scalar(255, 0, 255), 30, 8, 0);
 
 
-       // Rect face_area(real_facesize_x, real_facesize_y, real_facesize_width,real_facesize_height);
+        Rect face_area(real_facesize_x, real_facesize_y, real_facesize_width,real_facesize_height);
         rectangle(img_result,lb,tr,Scalar(0, 255, 0), 3, 4, 0);
-    //    Mat faceROI = img_gray( face_area );
+        Mat faceROI = img_gray( face_area );
 
 
-       // std::vector<Rect> eyes;
+        std::vector<Rect> eyes;
 
         //-- In each face, detect eyes
-      //  ((CascadeClassifier *) cascade_classifier_eye)->detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CASCADE_SCALE_IMAGE, Size(30, 30) );
+        ((CascadeClassifier *) cascade_classifier_eye)->detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CASCADE_SCALE_IMAGE, Size(30, 30) );
 
-        //for ( size_t j = 0; j < eyes.size(); j++ )
-      //  {
+        rete = eyes.size();
 
-      //      Point eye_center( real_facesize_x + eyes[j].x + eyes[j].width/2, real_facesize_y + eyes[j].y + eyes[j].height/2 );
-      //      int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
-      //      circle( img_result, eye_center, radius, Scalar( 255, 0, 0 ), 30, 8, 0 );
+        for ( size_t j = 0; j < eyes.size(); j++ )
+        {
 
-      //  }
+            Point eye_center( real_facesize_x + eyes[j].x + eyes[j].width/2, real_facesize_y + eyes[j].y + eyes[j].height/2 );
+            int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
+            circle( img_result, eye_center, radius, Scalar( 0, 255, 0 ), 3, 8, 0 );
+
+        }
     }
 
+    int result = ret;
+    result=result<<16;
+    result = result + rete;
 
-    //ret = (float)(end-start)/CLOCKS_PER_SEC;
 
-    return ret;
+    return result;
 
-}*/
+
+
+
+}

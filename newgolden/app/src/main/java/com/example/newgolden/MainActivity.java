@@ -1,6 +1,7 @@
 package com.example.newgolden;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
@@ -50,13 +51,18 @@ public class MainActivity extends AppCompatActivity
 
     //   public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
     public native long loadCascade(String cascadeFileName );
-    public native int detect(long cascadeClassifier_face,
-                             //아이 추가
-                             long cascadeClassifier_eye, long matAddrInput, long matAddrResult);
+
+  //  public native int detect_face(long cascadeClassifier_face, long cascadeClassifier_eye, long matAddrInput, long matAddrResult);
+    public native int detect_face(long cascadeClassifier_face, long cascadeClassifier_eye, long matAddrInput, long matAddrResult);
+  //  public native int detect_eyes(long cascadeClassifier_face, long cascadeClassifier_eye, long matAddrInput, long matAddrResult);
+
     public long cascadeClassifier_face = 0;
     //여기 추가
     public long cascadeClassifier_eye=0;
     public int human_cnt = 0;
+    public int eye_cnt=0;
+
+    public static Activity mainActivity;
 
     private final Semaphore writeLock = new Semaphore(1);
 
@@ -108,13 +114,16 @@ public class MainActivity extends AppCompatActivity
         //추가
         copyFile("haarcascade_eye_tree_eyeglasses.xml");
 
-        Log.d(TAG, "read_cascade_file:");
 
+
+        Log.d(TAG, "read_cascade_file:");
         cascadeClassifier_face = loadCascade( "haarcascade_frontalface_alt.xml");
-        Log.d(TAG, "read_cascade_file:");
 
+        Log.d(TAG, "read_cascade_file:");
         //추가
         cascadeClassifier_eye = loadCascade( "haarcascade_eye_tree_eyeglasses.xml");
+
+
     }
 
 
@@ -147,12 +156,16 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
+        mainActivity = MainActivity.this;
+
 
 
         mOpenCvCameraView = (CameraBridgeViewBase)findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setCameraIndex(1); // front-camera(1),  back-camera(0)
+
+
 
     }
 
@@ -215,17 +228,25 @@ public class MainActivity extends AppCompatActivity
 
             Core.flip(matInput, matInput, 1);
 
+
                                                        //아이추가
-            int ret = detect(cascadeClassifier_face,cascadeClassifier_eye, matInput.getNativeObjAddr(),
+            int ret = detect_face(cascadeClassifier_face, cascadeClassifier_eye, matInput.getNativeObjAddr(),
                     matResult.getNativeObjAddr());
 
-            if(ret == 0){
+            short fa,ey;
+            ey= (short) (ret & 0x0000ffff);
+            ret=ret>>16;
+            fa=(short)ret;
+
+            //얼굴검출 시간 측정
+
+            if((int)fa == 0){
                 human_cnt ++;
             }else{
                 human_cnt = 0;
             }
 
-            Log.d(TAG,"인식 초"+human_cnt+" sec");
+            Log.d(TAG,"얼굴 인식 초"+human_cnt+" sec");
             if (human_cnt >= 100){
 
                 Intent intent = new Intent(MainActivity.this, BackActivity.class);
@@ -234,8 +255,33 @@ public class MainActivity extends AppCompatActivity
                // FragmentChange(0);
             }
 
-            if (ret != 0)
-                Log.d(TAG, "사람 수는 "+ret+" 명");
+            if ((int)fa != 0)
+                Log.d(TAG, "사람 수는 "+(int)fa+" 명");
+
+
+            //눈 검출 시간 측정
+
+            if((int)ey == 0){
+                eye_cnt ++;
+            }else{
+                eye_cnt = 0;
+            }
+
+            Log.d(TAG,"눈인식 초"+eye_cnt+" sec");
+            if (eye_cnt >= 50){
+
+                Intent intent = new Intent(MainActivity.this, BackActivity.class);
+                startActivity(intent);
+                eye_cnt = 0;
+                // FragmentChange(0);
+            }
+
+
+            if ((int)ey != 0)
+                Log.d(TAG, "눈 검출 수는 "+(int)ey +" 명");
+
+
+
 
         }catch (InterruptedException e){
             e.printStackTrace();

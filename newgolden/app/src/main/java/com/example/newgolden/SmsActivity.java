@@ -65,7 +65,7 @@ public class SmsActivity extends AppCompatActivity {
 
         try {
 
-            String phoneNumber = "010-5127-7411";//번호입력
+            String phoneNumber = "010--";//번호입력
             String message = sadd;
             String dmessage = "(상세위치 : 위도 = "+ latitude + ", 경도 = "+ longitude + ")";
             SmsManager smsManager = SmsManager.getDefault();

@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10.2)
 
-set(pathPROJECT C:/Users/USER/Desktop/Capstone/Capstone_2021/newgolden)
+set(pathPROJECT C:/Users/ssy03/Desktop/GoldenTime/Capstone_2021/newgolden)
 set(pathOPENCV C:/OpenCV-android-sdk/sdk)
-set(pathLIBOPENCV_JAVA C:/Users/USER/Desktop/Capstone/Capstone_2021/newgolden/sdk/native/libs/${ANDROID_ABI}/libopencv_java4.so)
+set(pathLIBOPENCV_JAVA C:/Users/ssy03/Desktop/GoldenTime/Capstone_2021/newgolden/sdk/native/libs/${ANDROID_ABI}/libopencv_java4.so)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")

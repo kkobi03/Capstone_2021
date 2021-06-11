@@ -246,8 +246,8 @@ public class MainActivity extends AppCompatActivity
                 human_cnt = 0;
             }
 
-            Log.d(TAG,"얼굴 인식 초"+human_cnt+" sec");
-            if (human_cnt >= 100){
+            Log.d(TAG,"얼굴 인식 불가 시간 : "+human_cnt+"sec");
+            if (human_cnt >= 290){
 
                 Intent intent = new Intent(MainActivity.this, BackActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -258,8 +258,6 @@ public class MainActivity extends AppCompatActivity
                // FragmentChange(0);
             }
 
-            if ((int)fa != 0)
-                Log.d(TAG, "사람 수는 "+(int)fa+" 명");
 
 
             //눈 검출 시간 측정
@@ -270,8 +268,8 @@ public class MainActivity extends AppCompatActivity
                 eye_cnt = 0;
             }
 
-            Log.d(TAG,"눈인식 초"+eye_cnt+" sec");
-            if (eye_cnt >= 50){
+            Log.d(TAG,"눈 인식 불가 시간 : "+eye_cnt+"sec");
+            if (eye_cnt >= 290){
 
                 Intent intent = new Intent(MainActivity.this, BackActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -282,9 +280,6 @@ public class MainActivity extends AppCompatActivity
                 // FragmentChange(0);
             }
 
-
-            if ((int)ey != 0)
-                Log.d(TAG, "눈 검출 수는 "+(int)ey +" 명");
 
 
 

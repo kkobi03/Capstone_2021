@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -47,6 +48,7 @@ public class SmsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sms);
 
 
+
         if (!checkLocationServicesStatus()) {
 
             showDialogForLocationServiceSetting();
@@ -61,16 +63,23 @@ public class SmsActivity extends AppCompatActivity {
         double longitude = gpsTracker.getLongitude();
 
         String address = getCurrentAddress(latitude, longitude);
-        String sadd = address + " 에서 신고되었습니다.";
+        String sadd_1 = address + " 에서 신고되었습니다.";
+        String sadd_2 = address + " 에서 위급상황이 발생되었습니다.";
 
         try {
 
-            String phoneNumber = "010--";//번호입력
-            String message = sadd;
-            String dmessage = "(상세위치 : 위도 = "+ latitude + ", 경도 = "+ longitude + ")";
+            String phoneNumber_1 = ((Phone) getApplication()).getP_num();
+            Log.d(TAG,"야 도랏냐 "+phoneNumber_1);
+           // String phoneNumber_1 = "010-5127-7411";//119번호입력
+            String phoneNumber_2 = "010-4678-4911";//보호자번호입력
+
+            String message_1 = sadd_1;
+            String message_2 = sadd_2;
+            String dmessage_1 = "(상세위치 : 위도 = "+ latitude + ", 경도 = "+ longitude + ")";
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-            smsManager.sendTextMessage(phoneNumber, null, dmessage, null, null);
+            smsManager.sendTextMessage(phoneNumber_1, null, message_1, null, null);
+            smsManager.sendTextMessage(phoneNumber_1, null, dmessage_1, null, null);
+            smsManager.sendTextMessage(phoneNumber_2, null, message_2, null, null);
 
             Log.d(TAG,"전송완료");
             Toast.makeText(getApplicationContext(), "전송 완료!", Toast.LENGTH_LONG).show();
@@ -80,7 +89,6 @@ public class SmsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "SMS faild, please try again later!", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
-
 
 
 
